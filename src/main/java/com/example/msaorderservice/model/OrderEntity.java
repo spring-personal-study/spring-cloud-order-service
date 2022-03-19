@@ -1,5 +1,7 @@
 package com.example.msaorderservice.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -7,6 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
+@Setter @Getter
 @Table(name = "orders")
 public class OrderEntity implements Serializable {
 

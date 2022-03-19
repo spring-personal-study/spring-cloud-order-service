@@ -41,17 +41,8 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
-
-    @GetMapping("/orders1")
-    public ResponseEntity<ResponseOrder> getOrderByOrderId(String orderId) {
-        ResponseOrder responseOrder = new ResponseOrder();
-        BeanUtils.copyProperties(orderService.getOrderByOrderId(orderId), responseOrder);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseOrder);
-    }
-
-    @GetMapping("/orders2")
-    public ResponseEntity<List<ResponseOrder>> getOrdersByUserId(String userId) {
+    @GetMapping("/{userId}/orders")
+    public ResponseEntity<List<ResponseOrder>> getOrdersByUserId(@PathVariable("userId") String userId) {
         Iterable<OrderEntity> catalogs = orderService.getOrdersByUserId(userId);
 
         List<ResponseOrder> result = new ArrayList<>();
