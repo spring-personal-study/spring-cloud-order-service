@@ -1,5 +1,6 @@
 package com.example.msaorderservice.controller;
 
+import com.example.msaorderservice.messagequeue.KafkaProducer;
 import com.example.msaorderservice.model.OrderDto;
 import com.example.msaorderservice.model.OrderEntity;
 import com.example.msaorderservice.model.ResponseOrder;
@@ -22,6 +23,7 @@ public class OrderController {
 
     private final Environment env;
     private final OrderService orderService;
+    private final KafkaProducer kafkaProducer;
 
     @GetMapping("/health_check")
     public String status(HttpServletRequest request) {
@@ -37,6 +39,9 @@ public class OrderController {
         OrderDto order = orderService.createOrder(orderDto);
         ResponseOrder responseOrder = new ResponseOrder();
         BeanUtils.copyProperties(order, responseOrder);
+
+        // send this order to the kafka
+        kafkaProducer.send("example-catalog-topic", order); // 카탈로그 서비스의 KafkaConsumer 에 전달할 topic 명을 작성해야 한다.
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
