@@ -49,7 +49,7 @@ public class OrderController {
         orderDto.setTotalPrice(orderDto.getUnitPrice() * orderDto.getQty());
         // send this order to the kafka
         //kafkaProducer.send("example-catalog-topic", orderDto); // 카탈로그 서비스의 KafkaConsumer 에 전달할 topic 명을 작성해야 한다.
-        orderProducer.send("orders", orderDto); // topic 이름: orders. sink-connect 를 생성할때 토픽명을 orders 로 주어야한다.
+        orderProducer.send("example-catalog-topic", orderDto); // topic 이름: orders. sink-connect 를 생성할때 토픽명을 orders 로 주어야한다.
         /* end of kafka */
 
         ResponseOrder responseOrder = new ResponseOrder();
