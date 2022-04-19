@@ -7,6 +7,7 @@ import com.example.msaorderservice.model.OrderEntity;
 import com.example.msaorderservice.model.ResponseOrder;
 import com.example.msaorderservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/order-service")
@@ -35,6 +37,7 @@ public class OrderController {
 
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId, @RequestBody RequestOrder orderDetails) {
+        log.info("Before add orders data");
         OrderDto orderDto = new OrderDto();
         BeanUtils.copyProperties(orderDetails, orderDto);
         /* jpa */
@@ -54,11 +57,13 @@ public class OrderController {
 
         ResponseOrder responseOrder = new ResponseOrder();
         BeanUtils.copyProperties(orderDto, responseOrder); // jpa 방식을 사용한다면 orderDto 가 아닌 order 를 복사해 넣어야 함.
+        log.info("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResponseOrder>> getOrdersByUserId(@PathVariable("userId") String userId) {
+        log.info("Before retrieve orders data");
         Iterable<OrderEntity> catalogs = orderService.getOrdersByUserId(userId);
 
         List<ResponseOrder> result = new ArrayList<>();
@@ -68,7 +73,7 @@ public class OrderController {
             BeanUtils.copyProperties(v, responseOrder);
             result.add(responseOrder);
         });
-
+        log.info("Add retrieved orders data");
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
