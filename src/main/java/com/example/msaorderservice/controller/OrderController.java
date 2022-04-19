@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,17 +38,18 @@ public class OrderController {
         OrderDto orderDto = new OrderDto();
         BeanUtils.copyProperties(orderDetails, orderDto);
         /* jpa */
-        //orderDto.setUserId(userId);
-        //OrderDto order = orderService.createOrder(orderDto);
+        orderDto.setUserId(userId);
+        orderDto = orderService.createOrder(orderDto);
         /* end of jpa */
 
         // jpa 방식 또는 kafka 둘중 하나만 활성화해서 사용해야 한다.
+        // 만약 분산추적을 할 생각이라면 kafka 내용을 전체 주석처리한뒤 jpa 부분을 활성화해주세요.
         /* kafka */
-        orderDto.setOrderId(UUID.randomUUID().toString());
-        orderDto.setTotalPrice(orderDto.getUnitPrice() * orderDto.getQty());
+        //orderDto.setOrderId(UUID.randomUUID().toString());
+        //orderDto.setTotalPrice(orderDto.getUnitPrice() * orderDto.getQty());
         // send this order to the kafka
-        //kafkaProducer.send("example-catalog-topic", orderDto); // 카탈로그 서비스의 KafkaConsumer 에 전달할 topic 명을 작성해야 한다.
-        orderProducer.send("example-catalog-topic", orderDto); // topic 이름: orders. sink-connect 를 생성할때 토픽명을 orders 로 주어야한다.
+        // kafkaProducer.send("example-catalog-topic", orderDto); // 카탈로그 서비스의 KafkaConsumer 에 전달할 topic 명을 작성해야 한다.
+        // orderProducer.send("example-catalog-topic", orderDto); // topic 이름: orders. sink-connect 를 생성할때 토픽명을 orders 로 주어야한다.
         /* end of kafka */
 
         ResponseOrder responseOrder = new ResponseOrder();
